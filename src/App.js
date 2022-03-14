@@ -1,7 +1,11 @@
 import React from "react";
 import axios from "axios";
+import * as Realm from "realm-web";
 
 import "./App.css";
+
+const REALM_APP_ID = "<Your App ID>"; // e.g. myapp-abcde
+const app = new Realm.App({ id: REALM_APP_ID });
 
 class App extends React.Component {
   constructor(props) {
@@ -97,14 +101,19 @@ class App extends React.Component {
     const urlPrefix = "https://api.openweathermap.org/data/2.5/forecast?q=";
     const urlSuffix = "&APPID=fb1158dc7dfef5f0967ceac8f71ee3a6&units=metric";
 
-    return [urlPrefix, location, urlSuffix].join("");
+    const url = "https://pure-coast-36563.herokuapp.com/?city=";
+
+    // return [urlPrefix, location, urlSuffix].join("");
+    return [url, location].join("");
   };
 
   currentData = () => {
     const list = this.state.data.list;
     const nearestHr = this.computeNearestHr();
 
-    return list.find((e) => new Date(e.dt_txt).getHours() === nearestHr);
+    return list.find(
+      (e) => new Date(e.dt_txt.replace(/-/g, "/")).getHours() === nearestHr
+    );
   };
 
   computeNearestHr = () => {
